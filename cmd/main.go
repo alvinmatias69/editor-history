@@ -23,7 +23,7 @@ func main() {
 	}
 
 	pgpool, err := pgxpool.New(context.Background(),
-		fmt.Sprintf("postgres://%s:%s@127.0.0.1:5432/%s", dbCfg.Username, dbCfg.Password, dbCfg.DbName))
+		fmt.Sprintf("postgres://%s:%s@%s:%s/%s", dbCfg.Username, dbCfg.Password, dbCfg.Host, dbCfg.Port, dbCfg.DbName))
 	if err != nil {
 		log.Fatalf("Error initiating db connection: %v\n", err)
 	}

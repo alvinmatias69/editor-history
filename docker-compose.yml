@@ -1,25 +1,39 @@
 version: '3.9'
 
 services:
-  # web:
-  #   build:
-  #     context: .
-  #   container_name: web
-  #   ports:
-  #     - ${PORT}:${PORT}
-  #   environment:
-  #     PORT: ${PORT}
-  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-  #     POSTGRES_USER: ${POSTGRES_USER}
-  #     POSTGRES_DB: ${POSTGRES_DB}
-  #   depends_on:
-  #     db:
-  #       condition: service_healthy
+  web:
+    # image: ghcr.io/alvinmatias69/editor-history:v0.1
+    build:
+      context: .
+    container_name: web
+    ports:
+      - ${PORT}:${PORT}
+    environment:
+      PORT: ${PORT}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+      DEFAULT_TIMEOUT_SECONDS: 15
+      REDIS_ADDRESS: ${REDIS_ADDRESS}
+      REDIS_EXPIRY_DURATION: ${REDIS_EXPIRY_DURATION}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
   redis:
     image: redis:8
     ports:
       - 6379:6379
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]  # Command to run
+      interval: 30s                      # Check every 30 seconds
+      timeout: 10s                       # Fail if no response in 10s
+      retries: 3                         # Mark as unhealthy after 3 retries
+      start_period: 40s                  # Wait 40s before first check (for startup)
   db:
     image: postgres:16
     restart: always

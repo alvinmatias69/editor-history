@@ -1,0 +1,11 @@
+#editor {
+    background: rgba(0,0,0,0);
+    border: none;
+    resize: none;
+    overflow: hidden;
+}
+
+#editor:focus {
+    outline: none;
+    box-shadow: none;
+}

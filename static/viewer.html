@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Editor History - View {{ .DocumentID }}</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+        <link rel="stylesheet" href="/editor.css">
+        <link rel="stylesheet" href="/viewer.css">
+    </head>
+    <body class="bg-dark-subtle">
+        <div class="d-flex flex-column p-5">
+            <div class="row align-items-start justify-content-between">
+                <div class="col">
+                    <button id="finish-btn" class="btn btn-success" data-bs-toggle="modal" style="display: none;" disabled>Finished</button>
+                    <button id="on-progress-btn" class="btn btn-warning" data-bs-toggle="modal" style="display: none;" disabled>On Progress</button>
+                </div>
+                <div class="col text-end">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#share-modal">Share</button>
+                </div>
+            </div>
+            <div class="row mt-3 mb-3">
+                <div class="col bg-light-subtle shadow rounded p-5">
+                    <textarea class="form-control min-vh-100" id="editor" disabled></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="fixed-bottom container bg-dark rounded-top p-2" style="--bs-bg-opacity: .75">
+            <div class="row align-items-center">
+                <div class="col-1">
+                    <button class="player-button" data-bs-toggle="offcanvas" data-bs-target="#suspicious-list" aria-controls="suspicious-list">
+                        <i class="bi bi-list-task icon-button"></i>
+                    </button>
+                </div>
+                <div class="col-1">
+                    <button class="player-button" id="back">
+                        <i class="bi bi-skip-backward-btn-fill icon-button"></i>
+                    </button>
+                </div>
+                <div class="col-1">
+                    <button class="player-button" id="play">
+                        <i class="bi bi-play-btn-fill icon-button"></i>
+                    </button>
+                    <button class="player-button" id="pause" style="display: none;">
+                        <i class="bi bi-pause-btn-fill icon-button"></i>
+                    </button>
+                </div>
+                <div class="col-1">
+                    <button class="player-button" id="forward">
+                        <i class="bi bi-skip-forward-btn-fill icon-button"></i>
+                    </button>
+                </div>
+                <div class="col align-items-center">
+                    <input
+                        class="form-range"
+                        type="range"
+                        min="0"
+                        max="0"
+                        value="0"
+                        id="slider">
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="share-modal" tabindex="-1" aria-labelledby="share-modal-label" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="share-modal-label">Share Document</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label for="copy-read-url" class="form-label">Document URL</label>
+                        <div class="input-group mb-3">
+                            <button class="btn btn-outline-secondary" type="button" id="read-url-btn">Copy</button>
+                            <input type="text" class="form-control" id="read-url" readonly>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="error-modal" tabindex="-1" aria-labelledby="error-modal-label" aria-hidden="true" data-bs-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="error-modal-label">Internal Server Error</h1>
+                    </div>
+                    <div class="modal-body">
+                        <p>Server error, please retry</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="retry-btn">Retry</button>
+                        <button type="button" class="btn btn-secondary" onclick="location.href='/'">Get back to home</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="suspicious-list" aria-labelledby="">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Suspicious Edits</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <p id="suspicious-empty">There's no suspicious edits in this document.</p>
+                <div class="list-group list-group-numbered" id="suspicious-parent"></div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="/viewer.js"></script>
+        <script>
+         window.addEventListener("load", e => init("{{ .DocumentID }}"));
+        </script>
+    </body>
+</html>

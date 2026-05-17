@@ -197,7 +197,10 @@ function constructEditor() {
         if (event.operation == OPERATION_TYPE.INSERT) {
             value = value.slice(0, event.position_start) + event.value + value.slice(event.position_end, value.length);
         } else if (event.operation == OPERATION_TYPE.DELETE) {
-            value = value.slice(0, event.position_start) + value.slice(event.position_end, value.length);
+            const start = event.position_start === event.position_end
+                  ? event.position_start - 1
+                  : event.position_start;
+            value = value.slice(0, start) + value.slice(event.position_end, value.length);
         }
     }
     editor.value = value;
@@ -304,7 +307,6 @@ editor.addEventListener("input", e => {
         id: crypto.randomUUID(),
         editor_id: getSessionID(),
         value: value,
-        timestamp: e.timeStamp,
         position_start: positionStart,
         position_end: positionEnd,
         operation: EVENT_MAP[e.inputType],
